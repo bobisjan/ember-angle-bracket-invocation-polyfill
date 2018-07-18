@@ -95,6 +95,7 @@ import { lte, gte } from 'ember-compatibility-helpers';
             }
           }
 
+          runtimeResolver.builtInModifiers = Ember.assign({}, runtimeResolver.builtInModifiers);
           runtimeResolver.builtInModifiers._splattributes = {
             create(element, args, scope, dom) {
               let environment = owner.lookup('service:-glimmer-environment');
@@ -164,9 +165,10 @@ import { lte, gte } from 'ember-compatibility-helpers';
 
             if (!installedCustomDidCreateElement && definition) {
               let { manager } = definition;
+              let customManager = Ember.assign({}, manager);
 
-              let ORIGINAL_DID_CREATE_ELEMENT = manager.didCreateElement;
-              manager.didCreateElement = function(bucket, element, operations) {
+              let ORIGINAL_DID_CREATE_ELEMENT = customManager.didCreateElement;
+              customManager.didCreateElement = function(bucket, element, operations) {
                 ORIGINAL_DID_CREATE_ELEMENT.apply(this, arguments);
                 let { args } = bucket;
                 if (args.has('__ANGLE_ATTRS__')) {
